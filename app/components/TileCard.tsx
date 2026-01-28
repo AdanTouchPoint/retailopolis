@@ -18,9 +18,7 @@ export const TileCard: React.FC<TileCardProps> = ({ tile, isWinner, onNextTurn }
             <h2 className="text-2xl font-black text-slate-800 uppercase mb-2">{tile.name}</h2>
             
             <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-4 ${tile.color} bg-opacity-20`}>
-                {React.cloneElement(tile.icon, { 
-                    className: `w-10 h-10 ${tile.color.replace('bg-', 'text-').replace('100', '600').replace('500', '600')}` 
-                })}
+                {tile.icon}
             </div>
             
             <p className="text-lg font-medium text-slate-600">
