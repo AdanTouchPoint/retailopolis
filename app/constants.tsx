@@ -63,5 +63,5 @@ export type Property = {
   color: string;
   title_color?: string;
   position_title?: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 };
