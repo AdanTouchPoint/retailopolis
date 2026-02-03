@@ -1,5 +1,4 @@
 import { 
-  Car, Ship, Plane, Hexagon,
   ShoppingBag, Star, User, Gift,
   MapPin, Tag, Layers, Zap, Archive, CreditCard, Ticket, Anchor
 } from 'lucide-react';
@@ -35,25 +34,20 @@ export const PROPERTIES = [
 ];
 
 
-// Player Icons Configuration
-export const PLAYER_ICONS = [
-  { id: 'car', icon: Car, label: 'Coche' },
-  { id: 'ship', icon: Ship, label: 'Barco' },
-  { id: 'plane', icon: Plane, label: 'Avión' },
-  { id: 'hex', icon: Hexagon, label: 'Ficha' },
-];
-
 // Player Colors Configuration
 export const PLAYER_COLORS = [
-  'bg-red-500', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500'
+  { id: 'red', bg: 'bg-red-500', border: 'border-red-600', name: 'Rojo', hex: '#ef4444' },
+  { id: 'blue', bg: 'bg-blue-500', border: 'border-blue-600', name: 'Azul', hex: '#3b82f6' },
+  { id: 'green', bg: 'bg-emerald-500', border: 'border-emerald-600', name: 'Verde', hex: '#10b981' },
+  { id: 'orange', bg: 'bg-amber-500', border: 'border-amber-600', name: 'Naranja', hex: '#f59e0b' },
 ];
 
 // Type Definitions
 export type Player = {
+  id: string;
   name: string;
-  iconId: string;
   colorIndex: number;
-  position?: number;
+  position: number;
 };
 
 export type Property = {

@@ -6,7 +6,10 @@ import { Player } from './constants';
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Player[]>([
+    { id: 'player-0', name: 'Jugador 1', colorIndex: 0, position: 0 },
+    { id: 'player-1', name: 'Jugador 2', colorIndex: 1, position: 0 },
+  ]);
 
   useEffect(() => {
     // Inject Tailwind script if it's missing to prevent "tailwind is not defined" error
@@ -18,10 +21,10 @@ export default function App() {
     }
   }, []);
 
-  const handleStart = (playerData: Player[]) => { 
-    setPlayers(playerData); 
-    setGameStarted(true); 
+  const handleStart = (playerData: Player[]) => {
+    setPlayers(playerData);
+    setGameStarted(true);
   };
 
-  return gameStarted ? <GameBoard players={players} /> : <SetupScreen onStartGame={handleStart} />;
+  return gameStarted ? <GameBoard players={players} /> : <SetupScreen onPlayersSelected={handleStart} />;
 }

@@ -1,42 +1,75 @@
 'use client'
 import React, { useState } from 'react';
 import { ShoppingBag } from 'lucide-react';
-import { PLAYER_ICONS, PLAYER_COLORS, Player } from '../constants';
+import { PLAYER_COLORS, Player } from '../constants';
 
 interface SetupScreenProps {
-  onStartGame: (players: Player[]) => void;
+  onPlayersSelected: (players: Player[]) => void;
 }
 
-export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame }) => {
-  const [players, setPlayers] = useState<Player[]>([
-    { name: 'Jugador 1', iconId: 'car', colorIndex: 0 },
-    { name: 'Jugador 2', iconId: 'ship', colorIndex: 1 }
+export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) => {
+  const [players, setPlayers] = useState<Array<{ name: string; colorIndex: number }>>([
+    { name: '', colorIndex: 0 },
   ]);
 
-  const addPlayer = () => {
+  const [usedColors, setUsedColors] = useState<Set<number>>(new Set([0]));
+
+  const handleAddPlayer = () => {
     if (players.length < 4) {
-      setPlayers([...players, { 
-        name: `Jugador ${players.length + 1}`, 
-        iconId: PLAYER_ICONS[players.length % 4].id, 
-        colorIndex: players.length 
-      }]);
+      // Encontrar primer color no usado
+      let availableColor = 0;
+      for (let i = 0; i < PLAYER_COLORS.length; i++) {
+        if (!usedColors.has(i)) {
+          availableColor = i;
+          break;
+        }
+      }
+      
+      setPlayers([...players, { name: '', colorIndex: availableColor }]);
+      setUsedColors(new Set([...usedColors, availableColor]));
     }
   };
 
-  const removePlayer = (index: number) => {
-    if (players.length > 2) {
-      const newPlayers = [...players];
-      newPlayers.splice(index, 1);
-      setPlayers(newPlayers);
+  const handleRemovePlayer = (index: number) => {
+    if (players.length > 1) {
+      const removed = players[index];
+      const newUsedColors = new Set(usedColors);
+      newUsedColors.delete(removed.colorIndex);
+      
+      setPlayers(players.filter((_, i) => i !== index));
+      setUsedColors(newUsedColors);
     }
   };
 
-  const updatePlayer = (index: number, field: keyof Player, value: string | number) => {
+  const handleColorChange = (index: number, newColorIndex: number) => {
+    const oldColor = players[index].colorIndex;
+    const newUsedColors = new Set(usedColors);
+    newUsedColors.delete(oldColor);
+    newUsedColors.add(newColorIndex);
+
     const newPlayers = [...players];
-    newPlayers[index][field] = value as never;
+    newPlayers[index].colorIndex = newColorIndex;
+    setPlayers(newPlayers);
+    setUsedColors(newUsedColors);
+  };
+
+  const handleNameChange = (index: number, name: string) => {
+    const newPlayers = [...players];
+    newPlayers[index].name = name;
     setPlayers(newPlayers);
   };
 
+  const handleStart = () => {
+    const validPlayers = players.filter(p => p.name.trim());
+    if (validPlayers.length >= 1) {
+      onPlayersSelected(validPlayers.map((p, i) => ({
+        id: `player-${i}`,
+        name: p.name,
+        colorIndex: p.colorIndex,
+        position: 0,
+      })));
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4 font-sans text-slate-800">
       <div className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
@@ -45,44 +78,77 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame }) => {
            <h1 className="text-4xl font-black mb-2 text-center relative z-10">TIENDA<br/>MONOPOLIS</h1>
            <p className="text-indigo-200 text-center relative z-10">¡Completa el recorrido!</p>
         </div>
-        <div className="md:w-7/12 p-8 bg-slate-50">
-          <h2 className="text-2xl font-bold text-slate-800 mb-6">Configurar Jugadores</h2>
-          <div className="space-y-3 mb-8">
-            {players.map((p, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-slate-200">
-                <div className={`w-10 h-10 rounded-lg ${PLAYER_COLORS[p.colorIndex]} flex items-center justify-center text-white shadow-md`}>
-                  {React.createElement(PLAYER_ICONS.find(i => i.id === p.iconId)!.icon, { size: 20 })}
-                </div>
-                <input 
-                  value={p.name} 
-                  onChange={(e) => updatePlayer(idx, 'name', e.target.value)}
-                  className="bg-transparent border-b border-slate-300 focus:border-indigo-500 outline-none px-2 py-1 flex-grow text-slate-700 font-medium"
-                  placeholder="Nombre"
+   <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
+        <h1 className="text-4xl font-black text-center mb-8 text-indigo-700">
+          RetailOpoly
+        </h1>
+
+        <div className="space-y-4 mb-6">
+          {players.map((player, index) => (
+            <div key={index} className="flex gap-3 items-end">
+              {/* Nombre */}
+              <div className="flex-1">
+                <label className="block text-sm font-bold text-slate-700 mb-1">
+                  Jugador {index + 1}
+                </label>
+                <input
+                  type="text"
+                  value={player.name}
+                  onChange={(e) => handleNameChange(index, e.target.value)}
+                  placeholder="Nombre del jugador"
+                  className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 />
-                <button 
-                    onClick={() => {
-                        const nextIconIdx = (PLAYER_ICONS.findIndex(i => i.id === p.iconId) + 1) % PLAYER_ICONS.length;
-                        updatePlayer(idx, 'iconId', PLAYER_ICONS[nextIconIdx].id);
-                    }}
-                    className="text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded text-slate-600"
-                >
-                    Cambiar
-                </button>
-                {players.length > 2 && (
-                  <button onClick={() => removePlayer(idx)} className="text-red-400 hover:text-red-600 p-1">✕</button>
-                )}
               </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-3">
-             <button onClick={addPlayer} disabled={players.length >= 4} className="w-full py-3 rounded-xl border-2 border-dashed border-slate-300 text-slate-500 hover:border-indigo-400 hover:text-indigo-500 font-medium transition-colors disabled:opacity-50">
-                + Agregar Jugador
-             </button>
-             <button onClick={() => onStartGame(players)} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98]">
-                INICIAR PARTIDA
-             </button>
-          </div>
+
+              {/* Selector de Color */}
+              <div className="flex gap-2">
+                {PLAYER_COLORS.map((color, colorIdx) => (
+                  <button
+                    key={color.id}
+                    onClick={() => handleColorChange(index, colorIdx)}
+                    className={`w-12 h-12 rounded-lg transition-all ${color.bg} ${
+                      player.colorIndex === colorIdx
+                        ? `ring-4 ring-offset-2 ${color.border}`
+                        : 'opacity-60 hover:opacity-80'
+                    }`}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+
+              {/* Botón Eliminar */}
+              {players.length > 1 && (
+                <button
+                  onClick={() => handleRemovePlayer(index)}
+                  className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
         </div>
+
+        {/* Botón Agregar Jugador */}
+        {players.length < 4 && (
+          <button
+            onClick={handleAddPlayer}
+            className="w-full mb-6 px-4 py-3 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition font-bold"
+          >
+            + Agregar Jugador
+          </button>
+        )}
+
+        {/* Botón Comenzar */}
+        <button
+          onClick={handleStart}
+          className="w-full px-6 py-4 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition font-black text-lg"
+        >
+          COMENZAR JUEGO
+        </button>
+      </div>
+    </div>
       </div>
     </div>
   );
