@@ -39,7 +39,7 @@ export const Dice: React.FC<DiceProps> = ({ value, rolling, onClick }) => {
         {([1, 2, 3, 4, 5, 6] as const).map(face => (
           <div 
             key={face}
-            className={`absolute w-24 h-24 bg-white border border-slate-200 rounded-2xl shadow-inner flex items-center justify-center backface-hidden`}
+            className={`absolute w-24 h-24 bg-emerald-500  rounded-2xl shadow--lg flex items-center justify-center backface-hidden`}
             style={{ transform: faceTransforms[face] }}
           >
              <div className="grid grid-cols-3 gap-1 p-4 w-full h-full pointer-events-none">
@@ -49,7 +49,7 @@ export const Dice: React.FC<DiceProps> = ({ value, rolling, onClick }) => {
                     };
                     return (
                         <div key={i} className="flex items-center justify-center">
-                            {patterns[face].includes(i) && <div className="w-3 h-3 bg-indigo-600 rounded-full shadow-sm" />}
+                            {patterns[face].includes(i) && <div className="w-4 h-4 bg-white rounded-full shadow-sm" />}
                         </div>
                     );
                 })}

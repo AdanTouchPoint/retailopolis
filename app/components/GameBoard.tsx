@@ -5,7 +5,7 @@ import { Dice } from './Dice';
 import { TileCard } from './TileCard';
 import { BoardTile } from './BoardTile';
 import { BOARD_WIDTH, BOARD_HEIGHT, TOTAL_TILES, PROPERTIES, PLAYER_ICONS, PLAYER_COLORS, Player, Property } from '../constants';
-
+import { PngIcon } from './Icons/Icon';
 interface GameBoardProps {
   players: Player[];
 }
@@ -106,8 +106,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
              style={{ gridArea: `2 / 2 / 5 / 7` }}>
           
           {/* Decorative Background */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-             <ShoppingBag size={200} />
+          <div className="absolute inset-0 flex items-center justify-center  pointer-events-none">
+             <PngIcon src="/icons/img_centro.png" alt="fondo" className="w-120 h-150" />
           </div>
 
           {/* MAIN CONTENT */}
@@ -132,7 +132,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                     {gameState === 'idle' && (
                         <button 
                             onClick={rollDice}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 flex items-center gap-2"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-3xl shadow-lg transform transition hover:scale-105 active:scale-95 flex items-center gap-2"
                         >
                             <span className="text-lg">TIRAR DADO</span>
                         </button>

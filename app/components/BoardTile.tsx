@@ -23,9 +23,9 @@ export const BoardTile: React.FC<BoardTileProps> = ({
     <div 
       className={`relative  border flex flex-col items-center justify-between transition-all duration-500 overflow-hidden
         ${isActive 
-          ? 'bg-sky-0 border-2 border-red-50 shadow-md z-20' 
-          : 'bg-green-0 border-2 border-neutral-50  z-10'}
-        ${isStart ? 'border-red-400 bg-sky-100' : ''}
+          ? 'bg-white border-2 border-red-500 shadow-md z-20' 
+          : 'bg-white border-2 border-neutral-500  z-10'}
+        ${isStart ? 'border-red-400 bg-sky-50' : ''}
       `}
       style={{ 
         gridRow, 
@@ -35,7 +35,7 @@ export const BoardTile: React.FC<BoardTileProps> = ({
         {/* TITLE */}
         {!property.position_title ? (
             <div className={`w-full text-center ${property.title_color} p-2`}>
-            <span className="text-[10px] sm:text-[9px] font-bold text-slate-500 uppercase leading-none block truncate">
+            <span className="text-[10px] sm:text-[9px] font-bold text-slate-50 uppercase leading-none block truncate">
                 {property.name}
             </span>
         </div>
@@ -78,7 +78,7 @@ export const BoardTile: React.FC<BoardTileProps> = ({
         </div>
                 {/* TITLE */}
                 
-{property.position_title ? (
+        {property.position_title ? (
             <div className={`w-full text-center ${property.title_color} p-2`}>
             <span className="text-[10px] sm:text-[9px] font-bold text-slate-50 uppercase leading-none block truncate">
                 {property.name}
