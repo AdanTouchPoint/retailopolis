@@ -27,8 +27,8 @@ export const BoardTile: React.FC<BoardTileProps> = ({
     <div
       className={`relative border flex flex-col items-center justify-between transition-all duration-500 overflow-hidden
         ${isActive
-          ? `bg-white border-4 shadow-md z-20`
-          : `bg-white border-2 z-10`}
+          ? `bg-emerald-100 border-4 shadow-md z-20`
+          : `bg-emerald-100 border-2 z-10`}
         ${isStart ? 'border-emerald-400 bg-emerald-50' : ''}
       `}
       style={{
