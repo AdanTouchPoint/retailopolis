@@ -9,7 +9,9 @@ interface BoardTileProps {
   playersHere: (Player & { position: number, colorIndex: number })[];
   gridRow: number;
   gridCol: number;
+  ownerColor?: string; // e.g. 'border-red-500' or hex
 }
+
 
 export const BoardTile: React.FC<BoardTileProps> = ({
   property,
@@ -17,8 +19,10 @@ export const BoardTile: React.FC<BoardTileProps> = ({
   isStart,
   playersHere,
   gridRow,
-  gridCol
+  gridCol,
+  ownerColor
 }) => {
+
   return (
     <div
       className={`relative border flex flex-col items-center justify-between transition-all duration-500 overflow-hidden
@@ -32,10 +36,17 @@ export const BoardTile: React.FC<BoardTileProps> = ({
         gridColumn: gridCol,
         borderColor: playersHere.length > 0
           ? playersHere.map(p => PLAYER_COLORS[p.colorIndex].hex).join(',')
-          : undefined,
+          : (ownerColor || undefined), // Show owner color if no players here, or override? logic below handles conflict
+        borderWidth: ownerColor ? '4px' : undefined
       }}
     >
+      {/* OWNER INDICATOR (Subtle background fill or top bar) */}
+      {ownerColor && (
+        <div className="absolute top-0 left-0 w-full h-1.5 z-0" style={{ backgroundColor: ownerColor }} />
+      )}
+
       {/* TITLE */}
+
       {!property.position_title ? (
         <div className={`w-full text-center ${property.title_color} p-2`}>
           <span className="text-[10px] sm:text-[9px] font-bold text-slate-50 uppercase leading-none block truncate">
@@ -45,9 +56,15 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       ) : ''}
 
       {/* ICON */}
-      <div className="flex-grow flex items-center justify-center w-full px-2">
+      <div className="flex-grow flex items-center justify-center w-full px-2 flex-col gap-0.5">
         {property.icon}
+        {property.price && (
+          <span className="text-[9px] font-black text-slate-400 bg-slate-50 px-1 rounded-sm border border-slate-100">
+            ${property.price}
+          </span>
+        )}
       </div>
+
 
       {/* MESSAGE (Only if active) */}
       {isActive && (
@@ -67,12 +84,8 @@ export const BoardTile: React.FC<BoardTileProps> = ({
               className={`w-4 h-4 rounded-full border-2 border-white shadow-sm ${PLAYER_COLORS[player.colorIndex].bg}`}
               title={player.name}
             />
-            {/* Nombre jugador (solo si hay espacio) */}
-            {playersHere.length === 1 && (
-              <span className="text-[7px] font-bold text-slate-600 text-center truncate w-full">
-                {player.name.substring(0, 3)}
-              </span>
-            )}
+            {/* Nombre jugador removido por solicitud */}
+
           </div>
         ))}
       </div>
