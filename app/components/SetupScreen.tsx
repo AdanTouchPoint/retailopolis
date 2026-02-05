@@ -68,7 +68,9 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
         colorIndex: p.colorIndex,
         position: 0,
         money: 2000,
+        laps: 0,
       })));
+
 
     }
   };
@@ -110,8 +112,8 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                         key={color.id}
                         onClick={() => handleColorChange(index, colorIdx)}
                         className={`w-12 h-12 rounded-lg transition-all ${color.bg} ${player.colorIndex === colorIdx
-                            ? `ring-4 ring-offset-2 ${color.border}`
-                            : 'opacity-60 hover:opacity-80'
+                          ? `ring-4 ring-offset-2 ${color.border}`
+                          : 'opacity-60 hover:opacity-80'
                           }`}
                         title={color.name}
                       />

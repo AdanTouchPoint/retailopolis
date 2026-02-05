@@ -5,6 +5,8 @@ import { Dice } from './Dice';
 import { TileCard } from './TileCard';
 import { BoardTile } from './BoardTile';
 import { PlayerStats } from './PlayerStats';
+import { GameResults } from './GameResults';
+
 
 import { BOARD_WIDTH, BOARD_HEIGHT, TOTAL_TILES, PROPERTIES, PLAYER_COLORS, Player, Property } from '../constants';
 import { PngIcon } from './Icons/Icon';
@@ -15,8 +17,9 @@ interface GameBoardProps {
 
 export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers }) => {
   const [players, setPlayers] = useState<(Player & { position: number })[]>(
-    initialPlayers.map(p => ({ ...p, position: 0, money: p.money || 2000 }))
+    initialPlayers.map(p => ({ ...p, position: 0, money: p.money || 2000, laps: 0 }))
   );
+
   const [turn, setTurn] = useState(0);
   const [diceValue, setDiceValue] = useState(1);
   const [gameState, setGameState] = useState<'idle' | 'rolling' | 'showing_result' | 'moving' | 'landed'>('idle');
@@ -49,17 +52,30 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
 
   const movePlayer = (steps: number) => {
     let currentPos = currentPlayer.position;
-    const targetPos = (currentPos + steps) >= TOTAL_TILES ? 0 : currentPos + steps;
-    const isFinishing = (currentPos + steps) >= TOTAL_TILES;
-    let actualStepsToMove = isFinishing ? (TOTAL_TILES - currentPos) : steps;
+    // Remove isFinishing check, allow wrapping
+    let actualStepsToMove = steps;
 
     const stepInterval = setInterval(() => {
+
       if (actualStepsToMove > 0) {
         currentPos = (currentPos + 1) % TOTAL_TILES;
 
+        // LAP COUNTING LOGIC
+        if (currentPos === 0) { // Passed Start
+          // Updates laps in state later or track here? 
+          // Better to track when setting players below
+        }
+
         setPlayers(prev => {
           const newPlayers = [...prev];
-          newPlayers[turn].position = currentPos;
+          const movingPlayer = { ...newPlayers[turn] };
+
+          if (currentPos === 0) {
+            movingPlayer.laps = (movingPlayer.laps || 0) + 1;
+          }
+          movingPlayer.position = currentPos;
+
+          newPlayers[turn] = movingPlayer;
           return newPlayers;
         });
 
@@ -69,18 +85,39 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
         setCurrentTileData(PROPERTIES[currentPos] as Property);
         setGameState('landed');
 
-        if (isFinishing) {
-          setWinner(currentPlayer);
-        }
+        // CHECK GAME OVER (2 Laps)
+        const updatedPlayer = players[turn]; // Need fresh state? 
+        // Note: players state inside interval might be stale, but we updated it via callback. 
+        // However, we need to check the Laps of the current player.
+        // Let's check the *local* tracking we did or use a ref effectively. 
+        // Simplest: Check the player state in the next render cycle or use the loop variable.
+
+        // Actually best to check in the setInterval closure using the updated value we just pushed?
+        // We can't easily access the result of setPlayers immediately.
+        // Instead, let's check it based on our calculation of Laps (currentPos === 0 logic).
+
+        // Better approach: We know if they finished because `isFinishing` was true (passed total).
+        // Wait, isFinishing logic in original code meant "Reaching strict end"? 
+        // Here we want looping. 
+
+        // Let's re-read logic:
+        // movePlayer is called. We calculate target. 
+
+        // Correction: We need to detect if they completed 2 laps NOW.
+        setPlayers(prev => {
+          if (prev[turn].laps >= 2) {
+            setWinner(prev[turn]); // Game Over Trigger
+          }
+          return prev;
+        });
       }
     }, 600);
+
   };
 
   const nextTurn = () => {
-    if (winner) {
-      window.location.reload();
-      return;
-    }
+    if (winner) return; // Wait for restart
+
     setGameState('idle');
     setCurrentTileData(null);
     setTurn((turn + 1) % players.length);
@@ -134,7 +171,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-2 sm:p-4 overflow-hidden select-none font-sans text-slate-800">
 
+      {winner && (
+        <GameResults
+          players={players}
+          properties={PROPERTIES}
+          ownership={ownership}
+          onRestart={() => window.location.reload()}
+        />
+      )}
+
       <div className="flex flex-col md:flex-row items-start gap-8 w-full max-w-[1400px]">
+
         {/* STATS PANEL - LEFT/TOP */}
         <div className="w-full md:w-auto flex-shrink-0">
           <PlayerStats

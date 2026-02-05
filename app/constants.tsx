@@ -57,6 +57,7 @@ export type Player = {
   colorIndex: number;
   position: number;
   money: number;
+  laps: number;
 };
 
 
