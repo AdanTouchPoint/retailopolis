@@ -7,8 +7,9 @@ import { Player } from './constants';
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [players, setPlayers] = useState<Player[]>([
-    { id: 'player-0', name: 'Jugador 1', colorIndex: 0, position: 0, money: 2000 },
-    { id: 'player-1', name: 'Jugador 2', colorIndex: 1, position: 0, money: 2000 },
+    { id: 'player-0', name: 'Jugador 1', colorIndex: 0, position: 0, money: 2000, laps: 0 },
+    { id: 'player-1', name: 'Jugador 2', colorIndex: 1, position: 0, money: 2000, laps: 0 },
+
   ]);
 
   useEffect(() => {
