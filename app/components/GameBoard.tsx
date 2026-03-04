@@ -29,6 +29,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   // New State: Ownership (tileId -> playerId)
   const [ownership, setOwnership] = useState<Map<number, string>>(new Map());
 
+  // New State: Intro Flow
+  const [introState, setIntroState] = useState<'initial' | 'rules' | 'playing'>('initial');
+
   const currentPlayer = players[turn];
 
 
@@ -215,49 +218,88 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
             {/* MAIN CONTENT */}
             <div className="z-10 w-full h-full flex flex-col items-center justify-center p-4">
 
-              {/* TURN HEADER */}
-              <div className="absolute top-4 flex items-center gap-2 bg-white px-4 py-1 rounded-full shadow-sm border border-slate-200">
-                <span className="text-xs font-bold text-slate-400 uppercase">Turno</span>
-                <div className={`flex items-center gap-2 bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full`}>
-                  <div className={`w-3 h-3 rounded-full ${PLAYER_COLORS[currentPlayer.colorIndex].bg}`} />
-                  <span className="text-sm font-bold">{currentPlayer.name}</span>
-                </div>
-              </div>
-
-              {/* DICE STATE */}
-              {(gameState === 'idle' || gameState === 'rolling' || gameState === 'showing_result' || gameState === 'moving') && (
-                <div className="flex flex-col items-center animate-fade-in">
-                  <div className="mb-8 mt-6">
-                    <Dice value={diceValue} rolling={gameState === 'rolling'} onClick={rollDice} />
-                  </div>
-
-                  {gameState === 'idle' && (
-                    <button
-                      onClick={rollDice}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-3xl shadow-lg transform transition hover:scale-105 active:scale-95 flex items-center gap-2"
-                    >
-                      <span className="text-lg">TIRAR DADO</span>
-                    </button>
-                  )}
-                  {gameState === 'moving' && (
-                    <span className="text-slate-400 font-bold animate-pulse">Avanzando...</span>
-                  )}
+              {/* INITIAL STATE */}
+              {introState === 'initial' && (
+                <div className="flex flex-col items-center justify-end pb-8 animate-fade-in w-full h-full">
+                  <button
+                    onClick={() => setIntroState('rules')}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-12 rounded-full shadow-2xl transform transition hover:scale-105 active:scale-95 text-2xl border-4 border-emerald-500/30"
+                  >
+                    Iniciar
+                  </button>
                 </div>
               )}
 
-              {/* LANDED STATE */}
-              {(gameState === 'landed' && currentTileData) && (
-                <TileCard
-                  tile={currentTileData}
-                  isWinner={winner !== null}
-                  onNextTurn={nextTurn}
-                  owner={(() => {
-                    const owner = getOwner(currentTileData.id);
-                    return owner ? { name: owner.name, color: PLAYER_COLORS[owner.colorIndex].bg } : null;
-                  })()}
-                  canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id) && (currentPlayer.money >= (currentTileData.price || 0))}
-                  onBuy={buyProperty}
-                />
+              {/* RULES STATE */}
+              {introState === 'rules' && (
+                <div className="flex flex-col items-center justify-center animate-fade-in w-full max-w-2xl bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border-2 border-slate-100">
+                  <h2 className="text-2xl font-extrabold text-slate-800 mb-4 text-center uppercase tracking-wider text-emerald-600">Reglas del juego</h2>
+                  <div className="text-slate-600 text-[15px] sm:text-base mb-6 text-center leading-relaxed space-y-3 font-medium">
+                    <p>Tira los dados y avanza por el tablero. Cada casilla tiene un valor: compra las que puedas para implementar la mejor tecnología en tu tienda.</p>
+                    <p><strong>Tu objetivo es tener más innovación que los demás al completar 2 vueltas.</strong></p>
+                    <p>Empiezas con un presupuesto limitado, así que planea bien tus decisiones. Pero cuidado… hay casillas que te pueden hacer perder dinero. ¡Juega con estrategia!</p>
+                  </div>
+                  <button
+                    onClick={() => setIntroState('playing')}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-3xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg flex items-center gap-2"
+                  >
+                    <span>Tirar dado</span>
+                  </button>
+                </div>
+              )}
+
+              {/* PLAYING STATE */}
+              {introState === 'playing' && (
+                <>
+                  {/* TURN HEADER */}
+                  <div className="absolute top-4 flex items-center gap-2 bg-white px-4 py-1 rounded-full shadow-sm border border-slate-200">
+                    <span className="text-xs font-bold text-slate-400 uppercase">Turno</span>
+                    <div className={`flex items-center gap-2 bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full`}>
+                      <div className={`w-3 h-3 rounded-full ${PLAYER_COLORS[currentPlayer.colorIndex].bg}`} />
+                      <span className="text-sm font-bold">{currentPlayer.name}</span>
+                    </div>
+                  </div>
+
+                  {/* DICE STATE */}
+                  {(gameState === 'idle' || gameState === 'rolling' || gameState === 'showing_result' || gameState === 'moving') && (
+                    <div className="flex flex-col items-center justify-center animate-fade-in w-full h-full pb-6 relative">
+                      {/* Dice Container */}
+                      <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-slate-100 mt-12 mb-auto flex items-center justify-center min-w-[200px] min-h-[200px] aspect-square p-8">
+                        <Dice value={diceValue} rolling={gameState === 'rolling'} onClick={rollDice} />
+                      </div>
+
+                      {/* Action Button Area - Bottom aligned */}
+                      <div className="mt-auto flex justify-center w-full">
+                        {gameState === 'idle' && (
+                          <button
+                            onClick={rollDice}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-10 rounded-full shadow-2xl transform transition hover:scale-105 active:scale-95 flex items-center gap-2 text-xl border-4 border-emerald-500/30"
+                          >
+                            <span>TIRAR DADO</span>
+                          </button>
+                        )}
+                        {gameState === 'moving' && (
+                          <span className="text-slate-500 font-bold text-xl animate-pulse py-4 drop-shadow-sm">Avanzando...</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* LANDED STATE */}
+                  {(gameState === 'landed' && currentTileData) && (
+                    <TileCard
+                      tile={currentTileData}
+                      isWinner={winner !== null}
+                      onNextTurn={nextTurn}
+                      owner={(() => {
+                        const owner = getOwner(currentTileData.id);
+                        return owner ? { name: owner.name, color: PLAYER_COLORS[owner.colorIndex].bg } : null;
+                      })()}
+                      canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id) && (currentPlayer.money >= (currentTileData.price || 0))}
+                      onBuy={buyProperty}
+                    />
+                  )}
+                </>
               )}
 
 

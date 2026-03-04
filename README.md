@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Retailopoly Rules   
+
+Regla del juego
+Tira los dados y avanza por el tablero. Cada casilla tiene un valor: compra las que puedas para implementar la mejor tecnología en tu tienda.
+Tu objetivo es tener más innovación que los demás al completar 2 vueltas.
+Empiezas con un presupuesto limitado, así que planea bien tus decisiones. Pero cuidado… hay casillas que te pueden hacer perder dinero. ¡Juega con estrategia!
+

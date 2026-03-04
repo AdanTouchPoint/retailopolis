@@ -216,3 +216,49 @@ import { Box } from 'lucide-react';
 ---
 
 ¡Listo! Ahora cualquier desarrollador puede hacer cambios de apariencia fácilmente.
+
+---
+
+## 10. Modificar Interfaz Central (Inicio, Reglas y Dado)
+
+### Ubicación: `app/components/GameBoard.tsx`
+
+La zona central del tablero cambia entre tres estados: `initial` (Inicio), `rules` (Reglas) y `playing` (Juego). Los principales contenedores y botones de estas vistas se pueden estilizar fácilmente.
+
+#### A. Botón "Iniciar" y "TIRAR DADO"
+
+Los botones principales utilizan un diseño tipo "píldora" con sombras y bordes translúcidos. Ejemplo del botón "Iniciar":
+
+```typescript
+className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-12 rounded-full shadow-2xl transform transition hover:scale-105 active:scale-95 text-2xl border-4 border-emerald-500/30"
+```
+
+**Para cambiar el color (Ej: a azul):**
+1. Cambia `bg-emerald-600` por `bg-blue-600`
+2. Cambia `hover:bg-emerald-700` por `hover:bg-blue-700`
+3. Cambia el color del borde translúcido `border-emerald-500/30` por `border-blue-500/30`
+
+#### B. Tarjeta de Reglas y Contenedor del Dado
+
+Tanto las reglas como el contenedor donde se tira el dado tienen un efecto translúcido "Glassmorphism" con bordes redondeados:
+
+```typescript
+className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-slate-100 ..."
+```
+
+**Para modificar este contenedor:**
+- **Más opaco o transparente:** Cambia `bg-white/95` por `bg-white/50` o quita el `/95` para hacerlo sólido.
+- **Desenfoque del fondo (Glassmorphism):** El efecto lo da `backdrop-blur-sm`. Puedes usar `backdrop-blur-md` o quitarlo por completo.
+- **Redondeo:** Cambia `rounded-3xl` por `rounded-xl` (menos redondo) o `rounded-full` (completamente redondo).
+
+#### C. Tamaño del Contenedor del Dado
+
+Para asegurar que el contenedor del dado siempre sea un recuadro uniforme donde el dado esté en el centro, se utilizan utilidades de tamaño mínimo:
+
+```typescript
+className="... min-w-[200px] min-h-[200px] aspect-square flex items-center justify-center p-8"
+```
+
+**Opciones de tamaño:**
+- **Más grande:** Aumenta las dimensiones a `min-w-[250px] min-h-[250px]`
+- **Más alargado (rectangular):** Quita la propiedad `aspect-square`.
