@@ -67,13 +67,13 @@ export const BoardTile: React.FC<BoardTileProps> = ({
 
 
       {/* MESSAGE (Only if active) */}
-      {isActive && (
-        <div className="w-full text-center px-1 mb-1 animate-fade-in">
-          <span className="text-[10px] leading-tight font-bold text-slate-500 block">
 
-          </span>
-        </div>
-      )}
+      <div className="w-full text-center px-1 mb-1 animate-fade-in">
+        <span className="text-[10px] leading-tight font-bold text-slate-500 block">
+          {property.message}
+        </span>
+      </div>
+
 
       {/* PLAYER INDICATORS - COLORES */}
       <div className="w-full flex justify-center gap-1 mb-1 flex-wrap px-1">
