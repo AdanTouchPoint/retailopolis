@@ -48,8 +48,8 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       {/* TITLE */}
 
       {!property.position_title ? (
-        <div className={`w-full text-center ${property.title_color} p-2`}>
-          <span className="text-[10px] sm:text-[9px] font-bold text-slate-50 uppercase leading-none block truncate">
+        <div className={`w-full text-center ${property.title_color !== 'none' ? property.title_color : ''} p-2`}>
+          <span className={`text-[10px] sm:text-[9px] font-bold uppercase leading-none block truncate ${property.title_color === 'none' ? 'text-black' : 'text-slate-50'}`}>
             {property.name}
           </span>
         </div>
@@ -91,8 +91,8 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       </div>
 
       {property.position_title ? (
-        <div className={`w-full text-center ${property.title_color} p-2 mt-auto`}>
-          <span className="text-[10px] sm:text-[9px] font-bold text-slate-50 uppercase leading-none block truncate">
+        <div className={`w-full text-center ${property.title_color !== 'none' ? property.title_color : ''} p-2 mt-auto`}>
+          <span className={`text-[10px] sm:text-[9px] font-bold uppercase leading-none block truncate ${property.title_color === 'none' ? 'text-black' : 'text-slate-50'}`}>
             {property.name}
           </span>
         </div>

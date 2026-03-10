@@ -32,6 +32,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   // New State: Intro Flow
   const [introState, setIntroState] = useState<'initial' | 'rules' | 'playing'>('initial');
 
+  // New State: Penalty Modal
+  const [penaltyModal, setPenaltyModal] = useState<{ amount: number; message: string } | null>(null);
+
   const currentPlayer = players[turn];
 
 
@@ -88,31 +91,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
         setCurrentTileData(PROPERTIES[currentPos] as Property);
         setGameState('landed');
 
-        // CHECK GAME OVER (2 Laps)
-        const updatedPlayer = players[turn]; // Need fresh state? 
-        // Note: players state inside interval might be stale, but we updated it via callback. 
-        // However, we need to check the Laps of the current player.
-        // Let's check the *local* tracking we did or use a ref effectively. 
-        // Simplest: Check the player state in the next render cycle or use the loop variable.
+        // Check for Corner Penalties
+        let penaltyAmount = 0;
+        let penaltyMessage = '';
+        if (currentPos === 6) { penaltyAmount = 20; penaltyMessage = '¡Vas a la cárcel! Pierdes $20.'; }
+        else if (currentPos === 10) { penaltyAmount = 40; penaltyMessage = 'Impuesto al mal dato. Pierdes $40.'; }
+        else if (currentPos === 16) { penaltyAmount = 60; penaltyMessage = 'Estacionamiento. Pierdes $60.'; }
 
-        // Actually best to check in the setInterval closure using the updated value we just pushed?
-        // We can't easily access the result of setPlayers immediately.
-        // Instead, let's check it based on our calculation of Laps (currentPos === 0 logic).
-
-        // Better approach: We know if they finished because `isFinishing` was true (passed total).
-        // Wait, isFinishing logic in original code meant "Reaching strict end"? 
-        // Here we want looping. 
-
-        // Let's re-read logic:
-        // movePlayer is called. We calculate target. 
-
-        // Correction: We need to detect if they completed 2 laps NOW.
         setPlayers(prev => {
-          if (prev[turn].laps >= 2) {
-            setWinner(prev[turn]); // Game Over Trigger
+          const newPlayers = [...prev];
+
+          if (penaltyAmount > 0) {
+            newPlayers[turn] = {
+              ...newPlayers[turn],
+              money: Math.max(0, newPlayers[turn].money - penaltyAmount) // Prevent negative money? Or allow it? Let's allow negative or floor at 0. Let's floor at 0 just in case.
+            };
           }
-          return prev;
+
+          if (newPlayers[turn].laps >= 2) {
+            setWinner(newPlayers[turn]); // Game Over Trigger
+          }
+          return newPlayers;
         });
+
+        if (penaltyAmount > 0) {
+          setPenaltyModal({ amount: penaltyAmount, message: penaltyMessage });
+        }
       }
     }, 600);
 
@@ -121,6 +125,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   const nextTurn = () => {
     if (winner) return; // Wait for restart
 
+    setPenaltyModal(null);
     setGameState('idle');
     setCurrentTileData(null);
     setTurn((turn + 1) % players.length);
@@ -172,7 +177,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-2 sm:p-4 overflow-hidden select-none font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-2 sm:p-4 overflow-hidden select-none font-sans text-slate-800">
 
       {winner && (
         <GameResults
@@ -183,16 +188,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
         />
       )}
 
-      <div className="flex flex-col md:flex-row items-start gap-8 w-full max-w-[1400px]">
-
-        {/* STATS PANEL - LEFT/TOP */}
-        <div className="w-full md:w-auto flex-shrink-0">
-          <PlayerStats
-            players={players}
-            currentPlayerId={currentPlayer.id}
-            ownership={ownership}
-          />
-        </div>
+      <div className="flex flex-col items-center gap-8 w-full max-w-[1400px] mb-8 z-10">
 
         <div className="relative bg-white rounded-3xl shadow-2xl p-1 md:p-4 border-4 border-white flex-grow"
           style={{
@@ -220,10 +216,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
 
               {/* INITIAL STATE */}
               {introState === 'initial' && (
-                <div className="flex flex-col items-center justify-end pb-8 animate-fade-in w-full h-full">
+                <div className="flex flex-col items-center justify-end animate-fade-in w-full h-full">
                   <button
                     onClick={() => setIntroState('rules')}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-12 rounded-full shadow-2xl transform transition hover:scale-105 active:scale-95 text-2xl border-4 border-emerald-500/30"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-10 rounded-full shadow-2xl transform transition hover:scale-105 active:scale-95 text-xl border-4 border-emerald-500/30 mb-2"
                   >
                     Iniciar
                   </button>
@@ -285,8 +281,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                     </div>
                   )}
 
-                  {/* LANDED STATE */}
-                  {(gameState === 'landed' && currentTileData) && (
+                  {/* LANDED STATE (Normal Tile) */}
+                  {(gameState === 'landed' && currentTileData && !penaltyModal) && (
                     <TileCard
                       tile={currentTileData}
                       isWinner={winner !== null}
@@ -300,6 +296,29 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                     />
                   )}
                 </>
+              )}
+
+              {/* PENALTY MODAL */}
+              {penaltyModal && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl animate-fade-in p-4">
+                  <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-scale-in border-4 border-red-500">
+                    <div className="bg-red-100 p-4 rounded-full mb-4">
+                      <span className="text-4xl">⚠️</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">Penalización</h3>
+                    <p className="text-slate-600 font-medium mb-6">{penaltyModal.message}</p>
+                    <div className="bg-red-50 w-full py-4 rounded-xl border border-red-100 mb-8">
+                      <span className="text-sm font-bold text-red-400 block mb-1">CANTIDAD PERDIDA</span>
+                      <span className="text-4xl font-black text-red-600">-${penaltyModal.amount}</span>
+                    </div>
+                    <button
+                      onClick={nextTurn}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg"
+                    >
+                      Aceptar
+                    </button>
+                  </div>
+                </div>
               )}
 
 
@@ -330,6 +349,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
             );
           })}
         </div>
+
+        {/* STATS PANEL - BOTTOM */}
+        <div className="w-full mt-4">
+          <PlayerStats
+            players={players}
+            currentPlayerId={currentPlayer.id}
+            ownership={ownership}
+          />
+        </div>
+      </div>
+
+      {/* FOOTER */}
+      <div className="w-full bg-black py-4 z-40 mt-auto">
+        <p className="text-center text-slate-400 text-sm font-medium tracking-wide">
+          2025 - Términos y condiciones | Aviso de privacidad
+        </p>
       </div>
 
 
