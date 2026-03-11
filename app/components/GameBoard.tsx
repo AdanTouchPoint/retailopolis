@@ -195,15 +195,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
             width: 'min(95vw, 1000px)',
             aspectRatio: '7/5',
             display: 'grid',
-            gridTemplateColumns: `repeat(${BOARD_WIDTH}, 1fr)`,
-            gridTemplateRows: `repeat(${BOARD_HEIGHT}, 1fr)`,
+            gridTemplateColumns: `repeat(${BOARD_WIDTH}, 130px)`,
+            gridTemplateRows: `repeat(${BOARD_HEIGHT}, 130px)`,
             gap: '0.9px',
             //backgroundColor: '#1a67b5',
           }}>
 
           {/* CENTER AREA */}
 
-          <div className="bg-slate-50 rounded-2xl flex flex-col items-center justify-center relative border-2 border-slate-100 overflow-hidden"
+          <div className="bg-slate-50 rounded-2xl flex flex-col items-center justify-center relative border-2 border-slate-100 z-30"
             style={{ gridArea: `2 / 2 / 5 / 7` }}>
 
             {/* Decorative Background */}
@@ -281,49 +281,57 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                     </div>
                   )}
 
-                  {/* LANDED STATE (Normal Tile) */}
-                  {(gameState === 'landed' && currentTileData && !penaltyModal) && (
-                    <TileCard
-                      tile={currentTileData}
-                      isWinner={winner !== null}
-                      onNextTurn={nextTurn}
-                      owner={(() => {
-                        const owner = getOwner(currentTileData.id);
-                        return owner ? { name: owner.name, color: PLAYER_COLORS[owner.colorIndex].bg } : null;
-                      })()}
-                      canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id) && (currentPlayer.money >= (currentTileData.price || 0))}
-                      onBuy={buyProperty}
-                    />
-                  )}
+                  {/* LANDED STATE - moved to board overlay */}
                 </>
               )}
 
-              {/* PENALTY MODAL */}
-              {penaltyModal && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl animate-fade-in p-4">
-                  <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-scale-in border-4 border-red-500">
-                    <div className="bg-red-100 p-4 rounded-full mb-4">
-                      <span className="text-4xl">⚠️</span>
-                    </div>
-                    <h3 className="text-2xl font-black text-slate-800 mb-2">Penalización</h3>
-                    <p className="text-slate-600 font-medium mb-6">{penaltyModal.message}</p>
-                    <div className="bg-red-50 w-full py-4 rounded-xl border border-red-100 mb-8">
-                      <span className="text-sm font-bold text-red-400 block mb-1">CANTIDAD PERDIDA</span>
-                      <span className="text-4xl font-black text-red-600">-${penaltyModal.amount}</span>
-                    </div>
-                    <button
-                      onClick={nextTurn}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg"
-                    >
-                      Aceptar
-                    </button>
-                  </div>
-                </div>
-              )}
 
 
             </div>
           </div>
+
+          {/* MODAL OVERLAY - rendered at board level to overlay all tiles */}
+          {introState === 'playing' && gameState === 'landed' && currentTileData && !penaltyModal && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+              <div className="pointer-events-auto">
+                <TileCard
+                  tile={currentTileData}
+                  isWinner={winner !== null}
+                  onNextTurn={nextTurn}
+                  owner={(() => {
+                    const owner = getOwner(currentTileData.id);
+                    return owner ? { name: owner.name, color: PLAYER_COLORS[owner.colorIndex].bg } : null;
+                  })()}
+                  isOwnedByCurrentPlayer={ownership.get(currentTileData.id) === currentPlayer.id}
+                  canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id) && (currentPlayer.money >= (currentTileData.price || 0))}
+                  onBuy={buyProperty}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* PENALTY MODAL OVERLAY */}
+          {penaltyModal && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm rounded-2xl animate-fade-in p-4">
+              <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-scale-in border-4 border-red-500">
+                <div className="bg-red-100 p-4 rounded-full mb-4">
+                  <span className="text-4xl">⚠️</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-800 mb-2">Penalización</h3>
+                <p className="text-slate-600 font-medium mb-6">{penaltyModal.message}</p>
+                <div className="bg-red-50 w-full py-4 rounded-xl border border-red-100 mb-8">
+                  <span className="text-sm font-bold text-red-400 block mb-1">CANTIDAD PERDIDA</span>
+                  <span className="text-4xl font-black text-red-600">-${penaltyModal.amount}</span>
+                </div>
+                <button
+                  onClick={nextTurn}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg"
+                >
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* BOARD TILES */}
           {PROPERTIES.map((prop, idx) => {

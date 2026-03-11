@@ -25,7 +25,7 @@ export const BoardTile: React.FC<BoardTileProps> = ({
 
   return (
     <div
-      className={`relative border flex flex-col items-center justify-between transition-all duration-500 overflow-hidden
+      className={`relative w-full h-full min-w-0 min-h-0 border flex flex-col items-center justify-between transition-all duration-500 overflow-hidden
         ${isActive
           ? `bg-emerald-100 border-4 shadow-md z-20`
           : `bg-emerald-100 border-2 z-10`}
@@ -48,7 +48,7 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       {/* TITLE */}
 
       {!property.position_title ? (
-        <div className={`w-full text-center ${property.title_color !== 'none' ? property.title_color : ''} p-2`}>
+        <div className={`w-full text-center ${property.title_color !== 'none' ? property.title_color : ''} p-2 overflow-hidden min-h-0 shrink-0`}>
           <span className={`text-[10px] sm:text-[9px] font-bold uppercase leading-none block truncate ${property.title_color === 'none' ? 'text-black' : 'text-slate-50'}`}>
             {property.name}
           </span>
@@ -56,10 +56,10 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       ) : ''}
 
       {/* ICON */}
-      <div className="flex-grow flex items-center justify-center w-full px-2 flex-col gap-0.5">
+      <div className="flex-grow flex items-center justify-center w-full px-2 flex-col gap-0.5 min-h-0 overflow-hidden">
         {property.icon}
         {property.price && (
-          <span className="text-[9px] font-black text-slate-400 bg-slate-50 px-1 rounded-sm border border-slate-100">
+          <span className="text-[9px] font-black text-slate-400 bg-slate-50 px-1 rounded-sm border border-slate-100 shrink-0">
             ${property.price}
           </span>
         )}
@@ -68,8 +68,8 @@ export const BoardTile: React.FC<BoardTileProps> = ({
 
       {/* MESSAGE (Only if active) */}
 
-      <div className="w-full text-center px-1 mb-1 animate-fade-in">
-        <span className="text-[10px] leading-tight font-bold text-slate-500 block">
+      <div className="w-full text-center px-1 mb-1 animate-fade-in flex items-center justify-center overflow-hidden min-h-0">
+        <span className="text-[10px] leading-tight font-bold text-slate-500 block truncate w-full text-balance">
           {property.message}
         </span>
       </div>
@@ -91,7 +91,7 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       </div>
 
       {property.position_title ? (
-        <div className={`w-full text-center ${property.title_color !== 'none' ? property.title_color : ''} p-2 mt-auto`}>
+        <div className={`w-full text-center ${property.title_color !== 'none' ? property.title_color : ''} p-2 mt-auto overflow-hidden min-h-0 shrink-0`}>
           <span className={`text-[10px] sm:text-[9px] font-bold uppercase leading-none block truncate ${property.title_color === 'none' ? 'text-black' : 'text-slate-50'}`}>
             {property.name}
           </span>

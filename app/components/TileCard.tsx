@@ -8,6 +8,7 @@ interface TileCardProps {
   onNextTurn: () => void;
   // New props
   owner?: { name: string; color: string } | null;
+  isOwnedByCurrentPlayer?: boolean;
   canBuy?: boolean;
   onBuy?: () => void;
 }
@@ -17,6 +18,7 @@ export const TileCard: React.FC<TileCardProps> = ({
   isWinner,
   onNextTurn,
   owner,
+  isOwnedByCurrentPlayer,
   canBuy,
   onBuy
 }) => {
@@ -43,9 +45,13 @@ export const TileCard: React.FC<TileCardProps> = ({
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Valor</span>
             <span className="text-3xl font-black text-slate-700">${tile.price}</span>
 
-            {owner && (
+            {isOwnedByCurrentPlayer ? (
+              <div className="mt-2 px-4 py-1 rounded-full text-xs font-bold text-white shadow-sm bg-emerald-500">
+                ¡Esta tecnología es tuya!
+              </div>
+            ) : owner && (
               <div className={`mt-2 px-4 py-1 rounded-full text-xs font-bold text-white shadow-sm ${owner.color}`}>
-                Propiedad de {owner.name}
+                Tecnología de {owner.name}
               </div>
             )}
           </div>

@@ -68,7 +68,7 @@ export const GameResults: React.FC<GameResultsProps> = ({ players, properties, o
                                         <Coins className="w-3 h-3" /> Base: ${player.money}
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <Building2 className="w-3 h-3" /> Propiedades: +${player.propertyValue} ({player.ownedCount})
+                                        <Building2 className="w-3 h-3" /> Tecnologías: +${player.propertyValue} ({player.ownedCount})
                                     </span>
                                 </div>
                             </div>
