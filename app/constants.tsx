@@ -19,7 +19,7 @@ export const PROPERTIES = [
   { id: 4, name: "ATRACCION", message: "¿Logras que entren? Mejora tus vitrinas y activa el interés.", type: "property" as const, price: 20, color: "bg-purple-100", title_color: 'bg-sky-500', icon: <PngIcon src="/icons/atraccion_icon.png" alt="Atracción" className="w-8 h-8" /> },
 
   { id: 5, name: "TIENDA A PIE DE CALLE", message: "¿Analizas o supones lo que afecta al éxito de tu tienda?", type: "property" as const, price: 20, color: "bg-pink-100", title_color: 'bg-pink-500', icon: <PngIcon src="/icons/tienda_calle_icon.png" alt="Atracción" className="w-8 h-8" /> },
-  { id: 6, name: "VAS A LA CARCEL", message: "Decidir sin medir te lleva a cometer errores costosos.", type: "corner" as const, color: "bg-blue-200", title_color: 'none', icon: <PngIcon src="/icons/carcel_icon.png" alt="Atracción" className="w-8 h-8" /> },
+  { id: 6, name: "CONSTRUCCION VIAL", message: "Están remodelando las calles aledañas a tu tienda y nadie pasó por ahí.", type: "corner" as const, color: "bg-blue-200", title_color: 'none', icon: <PngIcon src="/icons/police-line.png" alt="Atracción" className="w-8 h-8" /> },
   { id: 7, name: "VISITAS", message: "Cuenta solo a quienes realmente se quedan en tu tienda.", type: "property" as const, price: 20, color: "bg-orange-100", title_color: 'bg-purple-500', icon: <PngIcon src="/icons/visitas_icon.png" alt="Visitas" className="w-8 h-8" /> },
 
   { id: 8, name: "PERMANENCIA", message: "¿Cuánto tiempo permanecen? Detecta áreas de valor.", type: "property" as const, price: 20, color: "bg-red-100", title_color: 'bg-purple-500', icon: <PngIcon src="/icons/permanencia_icon.png" alt="Permanencia" className="w-8 h-8" /> },
