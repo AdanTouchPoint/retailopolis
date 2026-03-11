@@ -67,7 +67,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
         name: p.name,
         colorIndex: p.colorIndex,
         position: 0,
-        money: 2000,
+        money: 1000,
         laps: 0,
       })));
 
@@ -75,17 +75,17 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
     }
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4 font-sans text-slate-800">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans text-slate-800">
       <div className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
-        <div className="md:w-5/12 bg-indigo-600 p-8 flex flex-col justify-center items-center text-white relative overflow-hidden">
-          <ShoppingBag size={80} className="mb-4 relative z-10" />
-          <h1 className="text-4xl font-black mb-2 text-center relative z-10">TIENDA<br />MONOPOLIS</h1>
-          <p className="text-indigo-200 text-center relative z-10">¡Completa el recorrido!</p>
+        <div className="md:w-5/12 bg-green-200 p-8 flex flex-col justify-center items-center text-white relative overflow-hidden">
+          <ShoppingBag size={80} className="mb-4 text-slate-600 relative z-10" />
+          <h1 className="text-4xl text-slate-600 font-black mb-2 text-center relative z-10">RETAILOPOLY</h1>
+          <p className="text-slate-600 text-center relative z-10">¡Completa el recorrido!</p>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
-            <h1 className="text-4xl font-black text-center mb-8 text-indigo-700">
-              RetailOpoly
+        <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
+          <div className="bg-slate-50 rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
+            <h1 className="text-4xl text-slate-600 font-black text-center mb-8 text-indigo-700 ">
+              RETAILOPOLY
             </h1>
 
             <div className="space-y-4 mb-6">
