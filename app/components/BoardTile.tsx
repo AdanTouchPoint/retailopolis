@@ -36,13 +36,12 @@ export const BoardTile: React.FC<BoardTileProps> = ({
         gridColumn: gridCol,
         borderColor: playersHere.length > 0
           ? playersHere.map(p => PLAYER_COLORS[p.colorIndex].hex).join(',')
-          : (ownerColor || undefined), // Show owner color if no players here, or override? logic below handles conflict
-        borderWidth: ownerColor ? '4px' : undefined
+          : undefined,
       }}
     >
-      {/* OWNER INDICATOR (Subtle background fill or top bar) */}
+      {/* OWNER INDICATOR — thin subtle top bar */}
       {ownerColor && (
-        <div className="absolute top-0 left-0 w-full h-1.5 z-0" style={{ backgroundColor: ownerColor }} />
+        <div className="absolute top-0 left-0 w-full h-1 z-0 opacity-50" style={{ backgroundColor: ownerColor }} />
       )}
 
       {/* TITLE */}

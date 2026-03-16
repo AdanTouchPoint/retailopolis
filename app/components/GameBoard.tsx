@@ -33,7 +33,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   const [introState, setIntroState] = useState<'initial' | 'rules' | 'playing'>('initial');
 
   // New State: Penalty Modal
-  const [penaltyModal, setPenaltyModal] = useState<{ amount: number; message: string } | null>(null);
+  const [penaltyModal, setPenaltyModal] = useState<{ amount: number; message: string; recipient?: string } | null>(null);
 
   const currentPlayer = players[turn];
 
@@ -91,31 +91,68 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
         setCurrentTileData(PROPERTIES[currentPos] as Property);
         setGameState('landed');
 
-        // Check for Corner Penalties
+        // ── Compute penalty/rent BEFORE setPlayers so values are ready for setPenaltyModal ──
+        const RENT_AMOUNT = 30;
         let penaltyAmount = 0;
         let penaltyMessage = '';
+        let penaltyRecipient: string | undefined = undefined;
+
+        // Corner penalties
         if (currentPos === 6) { penaltyAmount = 20; penaltyMessage = '¡Vas a la cárcel! Pierdes $20.'; }
         else if (currentPos === 10) { penaltyAmount = 40; penaltyMessage = 'Impuesto al mal dato. Pierdes $40.'; }
         else if (currentPos === 16) { penaltyAmount = 60; penaltyMessage = 'Estacionamiento. Pierdes $60.'; }
 
+        // Rent: is the tile owned by ANOTHER player?
+        const tileOwnerId = ownership.get(currentPos);
+        const isRent = !!(tileOwnerId && tileOwnerId !== players[turn].id);
+        if (isRent) {
+          const owner = players.find(p => p.id === tileOwnerId);
+          if (owner) {
+            penaltyAmount = RENT_AMOUNT;
+            penaltyMessage = `¡Caíste en la tecnología de ${owner.name}! Pagas $${RENT_AMOUNT} de impuesto.`;
+            penaltyRecipient = owner.name;
+          }
+        }
+
+        // Snapshot values so closures are safe
+        const finalAmount = penaltyAmount;
+        const finalMessage = penaltyMessage;
+        const finalRecipient = penaltyRecipient;
+        const finalTileOwnerId = tileOwnerId;
+
         setPlayers(prev => {
           const newPlayers = [...prev];
 
-          if (penaltyAmount > 0) {
+          if (isRent && finalTileOwnerId) {
+            const ownerIndex = newPlayers.findIndex(p => p.id === finalTileOwnerId);
+            if (ownerIndex !== -1) {
+              // Deduct from current player
+              newPlayers[turn] = {
+                ...newPlayers[turn],
+                money: Math.max(0, newPlayers[turn].money - RENT_AMOUNT)
+              };
+              // Transfer to owner
+              newPlayers[ownerIndex] = {
+                ...newPlayers[ownerIndex],
+                money: newPlayers[ownerIndex].money + RENT_AMOUNT
+              };
+            }
+          } else if (finalAmount > 0) {
+            // Corner penalty — deduct only
             newPlayers[turn] = {
               ...newPlayers[turn],
-              money: Math.max(0, newPlayers[turn].money - penaltyAmount) // Prevent negative money? Or allow it? Let's allow negative or floor at 0. Let's floor at 0 just in case.
+              money: Math.max(0, newPlayers[turn].money - finalAmount)
             };
           }
 
           if (newPlayers[turn].laps >= 2) {
-            setWinner(newPlayers[turn]); // Game Over Trigger
+            setWinner(newPlayers[turn]);
           }
           return newPlayers;
         });
 
-        if (penaltyAmount > 0) {
-          setPenaltyModal({ amount: penaltyAmount, message: penaltyMessage });
+        if (finalAmount > 0) {
+          setPenaltyModal({ amount: finalAmount, message: finalMessage, recipient: finalRecipient });
         }
       }
     }, 600);
@@ -233,7 +270,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                   <div className="text-slate-600 text-[15px] sm:text-base mb-6 text-center leading-relaxed space-y-3 font-medium">
                     <p>Tira los dados y avanza por el tablero. Cada casilla tiene un valor: compra las que puedas para implementar la mejor tecnología en tu tienda.</p>
                     <p><strong>Tu objetivo es tener más innovación que los demás al completar 2 vueltas.</strong></p>
-                    <p>Empiezas con un presupuesto limitado, así que planea bien tus decisiones. Pero cuidado… hay casillas que te pueden hacer perder dinero. ¡Juega con estrategia!</p>
+                    <p>Empiezas con un presupuesto limitado de $200, así que planea bien tus decisiones. Pero cuidado… hay casillas que te pueden hacer perder dinero. ¡Juega con estrategia!</p>
                   </div>
                   <button
                     onClick={() => setIntroState('playing')}
@@ -275,7 +312,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                           </button>
                         )}
                         {gameState === 'moving' && (
-                          <span className="text-slate-500 font-bold text-xl animate-pulse py-4 drop-shadow-sm">Avanzando...</span>
+                          <div className="bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-slate-100">
+                            <span className="text-slate-600 font-bold text-xl animate-pulse">Avanzando...</span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -292,7 +331,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
 
           {/* MODAL OVERLAY - rendered at board level to overlay all tiles */}
           {introState === 'playing' && gameState === 'landed' && currentTileData && !penaltyModal && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm rounded-2xl animate-fade-in p-4 pointer-events-none">
               <div className="pointer-events-auto">
                 <TileCard
                   tile={currentTileData}
@@ -313,19 +352,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
           {/* PENALTY MODAL OVERLAY */}
           {penaltyModal && (
             <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm rounded-2xl animate-fade-in p-4">
-              <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-scale-in border-4 border-red-500">
-                <div className="bg-red-100 p-4 rounded-full mb-4">
-                  <span className="text-4xl">⚠️</span>
+              <div className={`bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-scale-in border-4 ${penaltyModal.recipient ? 'border-amber-500' : 'border-red-500'}`}>
+                <div className={`${penaltyModal.recipient ? 'bg-amber-100' : 'bg-red-100'} p-4 rounded-full mb-4`}>
+                  <span className="text-4xl">{penaltyModal.recipient ? '🏪' : '⚠️'}</span>
                 </div>
-                <h3 className="text-2xl font-black text-slate-800 mb-2">Penalización</h3>
+                <h3 className="text-2xl font-black text-slate-800 mb-2">
+                  {penaltyModal.recipient ? '¡Impuesto!' : 'Penalización'}
+                </h3>
                 <p className="text-slate-600 font-medium mb-6">{penaltyModal.message}</p>
-                <div className="bg-red-50 w-full py-4 rounded-xl border border-red-100 mb-8">
-                  <span className="text-sm font-bold text-red-400 block mb-1">CANTIDAD PERDIDA</span>
-                  <span className="text-4xl font-black text-red-600">-${penaltyModal.amount}</span>
+                <div className={`${penaltyModal.recipient ? 'bg-amber-50 border-amber-100' : 'bg-red-50 border-red-100'} w-full py-4 rounded-xl border mb-8`}>
+                  <span className={`text-sm font-bold ${penaltyModal.recipient ? 'text-amber-400' : 'text-red-400'} block mb-1`}>CANTIDAD PAGADA</span>
+                  <span className={`text-4xl font-black ${penaltyModal.recipient ? 'text-amber-600' : 'text-red-600'}`}>-${penaltyModal.amount}</span>
                 </div>
                 <button
                   onClick={nextTurn}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg"
+                  className={`w-full ${penaltyModal.recipient ? 'bg-amber-500 hover:bg-amber-600' : 'bg-red-600 hover:bg-red-700'} text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg`}
                 >
                   Aceptar
                 </button>

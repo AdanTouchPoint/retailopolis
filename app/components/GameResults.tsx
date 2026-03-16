@@ -22,7 +22,12 @@ export const GameResults: React.FC<GameResultsProps> = ({ players, properties, o
             ownedCount: ownedProperties.length,
             totalScore
         };
-    }).sort((a, b) => b.totalScore - a.totalScore); // Sort by highest score
+    }).sort((a, b) => {
+        // Primary: most properties owned
+        if (b.ownedCount !== a.ownedCount) return b.ownedCount - a.ownedCount;
+        // Tiebreaker: most money
+        return b.money - a.money;
+    });
 
     const winner = results[0];
 
@@ -65,19 +70,12 @@ export const GameResults: React.FC<GameResultsProps> = ({ players, properties, o
                                 </div>
                                 <div className="flex gap-4 text-xs font-medium text-slate-500">
                                     <span className="flex items-center gap-1">
-                                        <Coins className="w-3 h-3" /> Base: ${player.money}
+                                        <Coins className="w-3 h-3" /> Dinero: ${player.money}
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <Building2 className="w-3 h-3" /> Tecnologías: +${player.propertyValue} ({player.ownedCount})
+                                        <Building2 className="w-3 h-3" /> Tecnologías: ({player.ownedCount})
                                     </span>
                                 </div>
-                            </div>
-
-                            <div className="text-right">
-                                <span className="text-xs font-bold text-slate-400 uppercase block">Total</span>
-                                <span className="text-2xl font-black text-emerald-600">
-                                    ${player.totalScore.toLocaleString()}
-                                </span>
                             </div>
                         </div>
                     ))}
