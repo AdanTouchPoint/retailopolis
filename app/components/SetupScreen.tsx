@@ -1,6 +1,5 @@
 'use client'
 import React, { useState } from 'react';
-import { ShoppingBag } from 'lucide-react';
 import { PLAYER_COLORS, Player } from '../constants';
 import { PUBLIC_EMAIL_DOMAINS } from '../utils/public_email_domains';
 
@@ -161,27 +160,25 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
     }
   };
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans text-slate-800">
-      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
-        <div className="md:w-5/12 bg-green-200 p-8 flex flex-col justify-center items-center text-white relative overflow-hidden">
-          <ShoppingBag size={80} className="mb-4 text-slate-600 relative z-10" />
-          <h1 className="text-4xl text-slate-600 font-black mb-2 text-center relative z-10">RETAILOPOLY</h1>
-          <p className="text-slate-600 text-center relative z-10">¡Completa el recorrido!</p>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-8 font-sans text-slate-800">
+      <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden max-w-[1200px] w-full flex flex-col lg:flex-row border border-slate-100 min-h-[700px]">
+        <div className="lg:w-5/12 bg-green-200 p-8 sm:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden min-h-[300px]">
+          <img src="/img/homeImg.png" alt="Retailopoly" className="w-full max-w-sm lg:max-w-full object-contain relative z-10 " />
         </div>
-        <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
-          <div className="bg-slate-50 rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
-            <h1 className="text-4xl text-slate-600 font-black text-center mb-6 text-indigo-700">
+        <div className="flex-1 flex flex-col justify-center p-6 sm:p-10 lg:p-14 bg-white relative">
+          <div className="w-full max-w-2xl mx-auto">
+            <h1 className="text-4xl sm:text-5xl text-slate-800 font-black text-left mb-2 tracking-tight">
               RETAILOPOLY
             </h1>
 
             {step === 1 ? (
               // --- STEP 1: LEAD CAPTURE ---
-              <div className="animate-fade-in">
-                <p className="text-slate-600 text-center mb-6 font-medium text-lg">
-                  Antes de jugar, comparte unos datos con nosotros.
+              <div className="animate-fade-in space-y-8 mt-6">
+                <p className="text-slate-500 text-left text-lg font-medium">
+                  Antes de jugar, compártenos unos datos.
                 </p>
 
-                <div className="space-y-4 mb-8">
+                <div className="space-y-5">
                   <div>
                     <label className="block text-sm font-bold text-slate-700 mb-1">Nombre Completo</label>
                     <input
@@ -214,7 +211,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.email}</p>}
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-1">Empresa</label>
                       <input
@@ -252,31 +249,31 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
 
                 <button
                   onClick={handleNextStep}
-                  className="w-full px-6 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition font-black text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200"
+                  className="w-full px-6 py-4 bg-green-500 text-white rounded-xl hover:bg-green-400 transition font-black text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200"
                 >
                   SIGUIENTE
                 </button>
               </div>
             ) : (
               // --- STEP 2: PLAYER SELECTION ---
-              <div className="animate-fade-in relative">
-                <button 
+              <div className="animate-fade-in relative mt-6">
+                <button
                   onClick={() => setStep(1)}
-                  className="absolute -top-14 left-0 text-sm font-bold text-slate-400 hover:text-indigo-600 transition flex items-center gap-1"
+                  className="absolute -top-[4rem] sm:-top-[4.5rem] right-0 text-sm font-bold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-full"
                 >
                   ← Volver
                 </button>
-                
-                <p className="text-slate-600 text-center mb-6 font-medium">
+
+                <p className="text-slate-500 text-left mb-6 font-medium text-lg">
                   Elige los nombres y colores de los jugadores.
                 </p>
 
-                <div className="space-y-4 mb-6">
+                <div className="space-y-5 mb-8">
                   {players.map((player, index) => (
-                    <div key={index} className="flex gap-3 items-end bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <div key={index} className="flex flex-col lg:flex-row gap-5 lg:items-end bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative group transition-all hover:shadow-md">
                       {/* Nombre */}
-                      <div className="flex-1">
-                        <label className="block text-sm font-bold text-slate-700 mb-1">
+                      <div className="flex-1 w-full">
+                        <label className="block text-sm font-bold text-slate-700 mb-2">
                           Jugador {index + 1}
                         </label>
                         <input
@@ -285,42 +282,48 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                           onChange={(e) => handleNameChange(index, e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleStart()}
                           placeholder="Nombre del jugador"
-                          className="w-full px-4 py-2 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 bg-slate-50 focus:bg-white transition-colors"
+                          className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 bg-slate-50 focus:bg-white transition-colors text-lg font-medium"
                         />
                       </div>
 
                       {/* Selector de Color */}
-                      <div className="flex gap-2">
-                        {PLAYER_COLORS.map((color, colorIdx) => {
-                          const takenByOther = players.some((p, i) => i !== index && p.colorIndex === colorIdx);
-                          const isSelected = player.colorIndex === colorIdx;
-                          return (
-                            <button
-                              key={color.id}
-                              onClick={() => !takenByOther && handleColorChange(index, colorIdx)}
-                              disabled={takenByOther}
-                              className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl transition-all ${color.bg} ${
-                                isSelected
-                                  ? `ring-4 ring-offset-2 ${color.border} shadow-md transform scale-105`
+                      <div className="flex-none w-full lg:w-auto">
+                        <label className="block text-sm font-bold text-slate-700 mb-2 lg:hidden">
+                          Color
+                        </label>
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
+                          {PLAYER_COLORS.map((color, colorIdx) => {
+                            const takenByOther = players.some((p, i) => i !== index && p.colorIndex === colorIdx);
+                            const isSelected = player.colorIndex === colorIdx;
+                            return (
+                              <button
+                                key={color.id}
+                                onClick={() => !takenByOther && handleColorChange(index, colorIdx)}
+                                disabled={takenByOther}
+                                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl transition-all duration-200 ${color.bg} ${isSelected
+                                  ? `ring-4 ring-offset-2 ${color.border} shadow-lg transform scale-110 z-10`
                                   : takenByOther
-                                  ? 'opacity-20 cursor-not-allowed grayscale'
-                                  : 'opacity-60 hover:opacity-100 hover:scale-105 hover:shadow-sm'
-                              }`}
-                              title={takenByOther ? `Color en uso` : color.name}
-                            />
-                          );
-                        })}
+                                    ? 'opacity-20 cursor-not-allowed grayscale scale-95'
+                                    : 'opacity-70 hover:opacity-100 hover:scale-110 hover:shadow-md'
+                                  }`}
+                                title={takenByOther ? `Color en uso` : color.name}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
 
                       {/* Botón Eliminar */}
                       {players.length > 1 && (
-                        <button
-                          onClick={() => handleRemovePlayer(index)}
-                          className="px-3 py-2 bg-red-100 text-red-600 rounded-xl hover:bg-red-500 hover:text-white transition-colors flex p-2 h-11 sm:h-12 items-center justify-center font-bold"
-                          title="Eliminar jugador"
-                        >
-                          ✕
-                        </button>
+                        <div className="absolute top-4 right-4 lg:relative lg:top-0 lg:right-0">
+                          <button
+                            onClick={() => handleRemovePlayer(index)}
+                            className="bg-red-50 text-red-500 hover:bg-red-600 hover:text-white rounded-xl transition-colors flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center font-bold"
+                            title="Eliminar jugador"
+                          >
+                            ✕
+                          </button>
+                        </div>
                       )}
                     </div>
                   ))}
@@ -330,7 +333,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                 {players.length < 4 && (
                   <button
                     onClick={handleAddPlayer}
-                    className="w-full mb-6 px-4 py-3 bg-indigo-50 border-2 border-dashed border-indigo-200 text-indigo-600 rounded-2xl hover:bg-indigo-100 hover:border-indigo-300 transition font-bold"
+                    className="w-full mb-8 px-4 py-4 bg-indigo-50 border-2 border-dashed border-indigo-200 text-indigo-600 rounded-2xl hover:bg-indigo-100 hover:border-indigo-300 transition font-bold text-lg"
                   >
                     + Agregar otro jugador
                   </button>
@@ -339,7 +342,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                 {/* Botón Comenzar */}
                 <button
                   onClick={handleStart}
-                  className="w-full px-6 py-4 bg-emerald-500 text-white rounded-2xl hover:bg-emerald-600 transition font-black text-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200"
+                  className="w-full px-6 py-4 bg-green-500 text-white rounded-2xl hover:bg-green-600 transition font-black text-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200"
                 >
                   COMENZAR JUEGO
                 </button>
