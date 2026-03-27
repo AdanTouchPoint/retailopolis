@@ -74,17 +74,26 @@ export const BoardTile: React.FC<BoardTileProps> = ({
       </div>
 
 
-      {/* PLAYER INDICATORS - COLORES */}
-      <div className="w-full flex justify-center gap-1 mb-1 flex-wrap px-1">
-        {playersHere.map((player, idx) => (
-          <div key={idx} className="flex flex-col items-center">
-            {/* Círculo de color */}
+      {/* PLAYER INDICATORS Y DUEÑO - COLORES */}
+      <div className="w-full flex justify-center gap-1 mb-1 flex-wrap px-1 min-h-[18px]">
+        {/* Ficha fija del dueño */}
+        {ownerColor && (
+          <div className="flex flex-col items-center">
             <div
-              className={`w-4 h-4 rounded-full border-2 border-white shadow-sm ${PLAYER_COLORS[player.colorIndex].bg}`}
+              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+              style={{ backgroundColor: ownerColor }}
+              title="Propiedad comprada"
+            />
+          </div>
+        )}
+        
+        {/* Fichas de jugadores actuales */}
+        {playersHere.map((player, idx) => (
+          <div key={`player-${idx}`} className="flex flex-col items-center">
+            <div
+              className={`w-4 h-4 rounded-full border-2 border-slate-800 shadow-md transform scale-110 z-10 ${PLAYER_COLORS[player.colorIndex].bg}`}
               title={player.name}
             />
-            {/* Nombre jugador removido por solicitud */}
-
           </div>
         ))}
       </div>

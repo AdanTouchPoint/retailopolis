@@ -129,7 +129,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
               // Deduct from current player
               newPlayers[turn] = {
                 ...newPlayers[turn],
-                money: Math.max(0, newPlayers[turn].money - RENT_AMOUNT)
+                money: newPlayers[turn].money - RENT_AMOUNT
               };
               // Transfer to owner
               newPlayers[ownerIndex] = {
@@ -141,7 +141,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
             // Corner penalty — deduct only
             newPlayers[turn] = {
               ...newPlayers[turn],
-              money: Math.max(0, newPlayers[turn].money - finalAmount)
+              money: newPlayers[turn].money - finalAmount
             };
           }
 
@@ -170,12 +170,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
 
   const buyProperty = () => {
     if (!currentTileData || !currentTileData.price) return;
-
-    // Check if player has enough money
-    if (currentPlayer.money < currentTileData.price) {
-      alert("No tienes suficiente dinero"); // Simple alert for now, could be better UI
-      return;
-    }
 
     // Deduct money
     setPlayers(prev => {
@@ -342,7 +336,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                     return owner ? { name: owner.name, color: PLAYER_COLORS[owner.colorIndex].bg } : null;
                   })()}
                   isOwnedByCurrentPlayer={ownership.get(currentTileData.id) === currentPlayer.id}
-                  canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id) && (currentPlayer.money >= (currentTileData.price || 0))}
+                  canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id)}
                   onBuy={buyProperty}
                 />
               </div>

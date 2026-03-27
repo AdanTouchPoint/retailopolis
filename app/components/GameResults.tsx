@@ -69,8 +69,8 @@ export const GameResults: React.FC<GameResultsProps> = ({ players, properties, o
                                     <span className="font-bold text-slate-800">{player.name}</span>
                                 </div>
                                 <div className="flex gap-4 text-xs font-medium text-slate-500">
-                                    <span className="flex items-center gap-1">
-                                        <Coins className="w-3 h-3" /> Dinero: ${player.money}
+                                    <span className={`flex items-center gap-1 ${player.money < 0 ? 'text-red-500' : ''}`}>
+                                        <Coins className="w-3 h-3" /> Dinero: {player.money < 0 ? `-$${Math.abs(player.money).toLocaleString()}` : `$${player.money.toLocaleString()}`}
                                     </span>
                                     <span className="flex items-center gap-1">
                                         <Building2 className="w-3 h-3" /> Tecnologías: ({player.ownedCount})

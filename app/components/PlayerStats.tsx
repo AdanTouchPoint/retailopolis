@@ -58,8 +58,8 @@ export const PlayerStats: React.FC<PlayerStatsProps> = ({ players, currentPlayer
                                 <div className="flex flex-col flex-grow">
                                     <span className="text-[10px] font-black text-slate-800 mb-0.5">SALDO</span>
                                     <div className="bg-white rounded-md px-3 py-1.5 text-center shadow-sm border border-slate-200">
-                                        <span className="text-xl font-bold text-slate-900 tracking-tight">
-                                            ${(player.money || 0).toLocaleString()}
+                                        <span className={`text-xl font-bold tracking-tight ${player.money < 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                                            {player.money < 0 ? `-$${Math.abs(player.money || 0).toLocaleString()}` : `$${(player.money || 0).toLocaleString()}`}
                                         </span>
                                     </div>
                                 </div>
