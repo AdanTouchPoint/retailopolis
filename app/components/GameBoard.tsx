@@ -170,6 +170,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
 
   const buyProperty = () => {
     if (!currentTileData || !currentTileData.price) return;
+    if (currentPlayer.money < currentTileData.price) return;
 
     // Deduct money
     setPlayers(prev => {
@@ -219,9 +220,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
         />
       )}
 
-      <div className="flex flex-col items-center gap-8 w-full max-w-[1400px] mb-8 z-10">
+      <div className="flex flex-col xl:flex-row items-center xl:items-start justify-center gap-8 w-full max-w-[1600px] mb-8 z-10">
 
-        <div className="relative bg-white rounded-3xl shadow-2xl p-1 md:p-4 border-4 border-white flex-grow"
+        <div className="relative bg-white rounded-3xl shadow-2xl p-1 md:p-4 border-4 border-white flex-shrink-0"
           style={{
             width: 'min(95vw, 1000px)',
             aspectRatio: '7/5',
@@ -336,7 +337,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
                     return owner ? { name: owner.name, color: PLAYER_COLORS[owner.colorIndex].bg } : null;
                   })()}
                   isOwnedByCurrentPlayer={ownership.get(currentTileData.id) === currentPlayer.id}
-                  canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id)}
+                  canBuy={currentTileData.type === 'property' && !ownership.has(currentTileData.id) && currentPlayer.money >= (currentTileData.price || 0)}
                   onBuy={buyProperty}
                 />
               </div>
@@ -393,8 +394,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
           })}
         </div>
 
-        {/* STATS PANEL - BOTTOM */}
-        <div className="w-full mt-4">
+        {/* STATS PANEL - RIGHT */}
+        <div className="w-full xl:w-auto mt-4 xl:mt-0 xl:h-auto flex flex-col justify-start">
           <PlayerStats
             players={players}
             currentPlayerId={currentPlayer.id}

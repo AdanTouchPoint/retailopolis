@@ -10,7 +10,7 @@ interface PlayerStatsProps {
 
 export const PlayerStats: React.FC<PlayerStatsProps> = ({ players, currentPlayerId, ownership }) => {
     return (
-        <div className="flex flex-col md:flex-row gap-4 z-20 w-full justify-center items-end h-full  space-x-4">
+        <div className="flex flex-col md:flex-row xl:flex-col gap-4 z-20 w-full justify-center xl:justify-start items-center md:items-end xl:items-center h-full">
             {players.map((player) => {
                 const isTurn = player.id === currentPlayerId;
 
@@ -33,7 +33,7 @@ export const PlayerStats: React.FC<PlayerStatsProps> = ({ players, currentPlayer
                         key={player.id}
                         className={`
                           relative flex flex-col rounded-xl overflow-hidden shadow-lg border-[3px] border-slate-800 transition-all duration-300
-                          ${isTurn ? 'scale-110 z-30 mb-4' : 'scale-100 z-10 hover:scale-105'}
+                          ${isTurn ? 'scale-105 z-30 mb-4' : 'scale-100 z-10 hover:scale-105'}
                         `}
                         style={{ minWidth: '220px', backgroundColor: '#d1fae5' /* emerald-100 equivalent for the light green bg */ }}
                     >
