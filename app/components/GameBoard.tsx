@@ -214,7 +214,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-2 sm:p-4 overflow-hidden select-none font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-2 sm:p-4 pt-28 sm:pt-32 overflow-hidden select-none font-sans text-slate-800">
 
       {winner && (
         <GameResults

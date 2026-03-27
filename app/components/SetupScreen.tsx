@@ -160,7 +160,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
     }
   };
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-8 font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-8 pt-24 sm:pt-28 font-sans text-slate-800">
       <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden max-w-[1200px] w-full flex flex-col lg:flex-row border border-slate-100 min-h-[700px]">
         <div className="lg:w-5/12 bg-green-200 p-8 sm:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden min-h-[300px]">
           <img src="/img/homeImg.png" alt="Retailopoly" className="w-full max-w-sm lg:max-w-full object-contain relative z-10 " />
