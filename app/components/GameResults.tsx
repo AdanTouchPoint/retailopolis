@@ -1,6 +1,7 @@
 import React from 'react';
 import { Player, Property, PLAYER_COLORS } from '../constants';
 import { Trophy, Coins, Building2 } from 'lucide-react';
+import { Banner } from './Banner';
 
 interface GameResultsProps {
     players: Player[];
@@ -83,10 +84,12 @@ export const GameResults: React.FC<GameResultsProps> = ({ players, properties, o
 
                 <button
                     onClick={onRestart}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg"
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 text-lg mb-6"
                 >
                     JUGAR DE NUEVO
                 </button>
+
+                <Banner />
 
             </div>
             <style>{`

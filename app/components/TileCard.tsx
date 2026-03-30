@@ -26,7 +26,7 @@ export const TileCard: React.FC<TileCardProps> = ({
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-sm animate-scale-in">
       {/* MESSAGE CARD */}
-      <div className="bg-white p-6 rounded-2xl shadow-xl border border-slate-100 w-full text-center mb-6 relative overflow-hidden">
+      <div className="bg-white p-6 rounded-2xl shadow-xl border border-slate-100 w-full text-center relative overflow-hidden">
         <div className={`absolute top-0 left-0 w-full h-2 ${tile.color}`}></div>
 
         <h2 className="text-2xl font-black text-slate-800 uppercase mb-2">{tile.name}</h2>
@@ -57,28 +57,27 @@ export const TileCard: React.FC<TileCardProps> = ({
           </div>
         )}
 
-      </div>
+        {/* ACTIONS */}
+        <div className="flex gap-3 w-full justify-center mt-8">
+          {canBuy && onBuy && (
+            <button
+              onClick={onBuy}
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95"
+            >
+              COMPRAR
+            </button>
+          )}
 
-      {/* ACTIONS */}
-      <div className="flex gap-3 w-full justify-center">
-        {canBuy && onBuy && (
           <button
-            onClick={onBuy}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95"
+            onClick={onNextTurn}
+            className={`
+                  ${canBuy ? 'flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700' : 'w-full bg-indigo-600 hover:bg-indigo-700 text-white'}
+                  font-bold py-3 px-6 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95
+                `}
           >
-            COMPRAR
+            {isWinner ? "REINICIAR" : (canBuy ? "PASAR" : "TERMINAR TURNO")}
           </button>
-        )}
-
-        <button
-          onClick={onNextTurn}
-          className={`
-                ${canBuy ? 'flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700' : 'w-full bg-indigo-600 hover:bg-indigo-700 text-white'}
-                font-bold py-3 px-6 rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95
-              `}
-        >
-          {isWinner ? "REINICIAR" : (canBuy ? "PASAR" : "TERMINAR TURNO")}
-        </button>
+        </div>
       </div>
 
       <style>{`

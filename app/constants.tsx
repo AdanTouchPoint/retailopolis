@@ -14,7 +14,7 @@ export const PROPERTIES = [
   { id: 0, name: "SALIDA", message: "", type: "start" as const, color: "bg-emerald-500", title_color: 'none', icon: <PngIcon src="/icons/flecha_icon.png" alt="Salida" className="w-8 h-8" /> },
   { id: 1, name: "", message: "¡Comienza tu camino con visibilidad real del piso de ventas!", type: "property" as const, price: 20, color: "bg-purple-100", title_color: 'none', icon: <PngIcon src="/icons/gettin_icon.png" alt="Paseantes" className="w-8 h-8" /> },
 
-  { id: 2, name: "", message: "¡50% de descuento!", type: "property" as const, price: 20, color: "bg-yellow-100", title_color: 'none', icon: <PngIcon src="/icons/gettin_router_icon.png" alt="Descuento" className="w-full h-full" /> },
+  { id: 2, name: "", message: "Antena Getin", type: "property" as const, price: 20, color: "bg-yellow-100", title_color: 'none', icon: <PngIcon src="/icons/gettin_router_icon.png" alt="Descuento" className="w-full h-full" /> },
   { id: 3, name: "PASEANTES", message: "¿Cuántas personas pasan frente a tu tienda cada día?", title_color: 'bg-sky-500', type: "property" as const, price: 20, color: "bg-purple-100", icon: <PngIcon src="/icons/pederestian_icon.png" alt="Paseantes" className="w-8 h-8" /> },
   { id: 4, name: "ATRACCION", message: "¿Logras que entren? Mejora tus vitrinas y activa el interés.", type: "property" as const, price: 20, color: "bg-purple-100", title_color: 'bg-sky-500', icon: <PngIcon src="/icons/atraccion_icon.png" alt="Atracción" className="w-8 h-8" /> },
 

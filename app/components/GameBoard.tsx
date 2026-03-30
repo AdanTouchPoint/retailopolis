@@ -6,6 +6,7 @@ import { TileCard } from './TileCard';
 import { BoardTile } from './BoardTile';
 import { PlayerStats } from './PlayerStats';
 import { GameResults } from './GameResults';
+import { Banner } from './Banner';
 
 
 import { BOARD_WIDTH, BOARD_HEIGHT, TOTAL_TILES, PROPERTIES, PLAYER_COLORS, Player, Property } from '../constants';
@@ -402,6 +403,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({ players: initialPlayers })
             ownership={ownership}
           />
         </div>
+      </div>
+
+      {/* BANNER CTA */}
+      <div className="w-full max-w-[1600px] mb-8 z-10 px-2 sm:px-4">
+        <Banner />
       </div>
 
       {/* FOOTER */}
