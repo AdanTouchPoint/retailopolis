@@ -173,7 +173,12 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
 
             {step === 1 ? (
               // --- STEP 1: LEAD CAPTURE ---
-              <div className="animate-fade-in space-y-8 mt-6">
+              <form
+                id="retailopoly-landing"
+                onSubmit={(e) => { e.preventDefault(); handleNextStep(); }}
+                className="animate-fade-in space-y-8 mt-6"
+              >
+                <input type="hidden" name="identificador" value="retailopoly-landing" />
                 <p className="text-slate-500 text-left text-lg font-medium">
                   Antes de jugar, compártenos unos datos.
                 </p>
@@ -183,13 +188,13 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                     <label className="block text-sm font-bold text-slate-700 mb-1">Nombre Completo</label>
                     <input
                       type="text"
+                      name="name"
                       maxLength={50}
                       value={leadData.name}
                       onChange={(e) => {
                         setLeadData({ ...leadData, name: e.target.value });
                         if (errors.name) setErrors({ ...errors, name: '' });
                       }}
-                      onKeyDown={(e) => e.key === 'Enter' && handleNextStep()}
                       placeholder="Tu nombre"
                       className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${errors.name ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-slate-300 focus:border-indigo-500'}`}
                     />
@@ -199,13 +204,13 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                     <label className="block text-sm font-bold text-slate-700 mb-1">Correo Electrónico</label>
                     <input
                       type="email"
+                      name="email"
                       maxLength={100}
                       value={leadData.email}
                       onChange={(e) => {
                         setLeadData({ ...leadData, email: e.target.value });
                         if (errors.email) setErrors({ ...errors, email: '' });
                       }}
-                      onKeyDown={(e) => e.key === 'Enter' && handleNextStep()}
                       placeholder="tu@correo.com"
                       className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${errors.email ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-slate-300 focus:border-indigo-500'}`}
                     />
@@ -216,13 +221,13 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                       <label className="block text-sm font-bold text-slate-700 mb-1">Empresa</label>
                       <input
                         type="text"
+                        name="company"
                         maxLength={100}
                         value={leadData.company}
                         onChange={(e) => {
                           setLeadData({ ...leadData, company: e.target.value });
                           if (errors.company) setErrors({ ...errors, company: '' });
                         }}
-                        onKeyDown={(e) => e.key === 'Enter' && handleNextStep()}
                         placeholder="Nombre de tu empresa"
                         className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${errors.company ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-slate-300 focus:border-indigo-500'}`}
                       />
@@ -232,13 +237,13 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                       <label className="block text-sm font-bold text-slate-700 mb-1">Cargo</label>
                       <input
                         type="text"
+                        name="job_title"
                         maxLength={50}
                         value={leadData.role}
                         onChange={(e) => {
                           setLeadData({ ...leadData, role: e.target.value });
                           if (errors.role) setErrors({ ...errors, role: '' });
                         }}
-                        onKeyDown={(e) => e.key === 'Enter' && handleNextStep()}
                         placeholder="Ej. Gerente"
                         className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${errors.role ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-slate-300 focus:border-indigo-500'}`}
                       />
@@ -248,12 +253,12 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onPlayersSelected }) =
                 </div>
 
                 <button
-                  onClick={handleNextStep}
+                  type="submit"
                   className="w-full px-6 py-4 bg-green-500 text-white rounded-xl hover:bg-green-400 transition font-black text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200"
                 >
                   SIGUIENTE
                 </button>
-              </div>
+              </form>
             ) : (
               // --- STEP 2: PLAYER SELECTION ---
               <div className="animate-fade-in relative mt-6">
